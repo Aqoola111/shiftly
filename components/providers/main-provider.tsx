@@ -1,4 +1,5 @@
 import {Toaster} from "@/components/ui/sonner";
+import {TooltipProvider} from "@/components/ui/tooltip";
 import {TRPCReactProvider} from "@/trpc/client";
 import {ReactNode} from "react";
 
@@ -9,7 +10,9 @@ type Props = {
 const MainProvider = ({children}: Props) => {
 	return (
 		<TRPCReactProvider>
-			{children}
+			<TooltipProvider>
+				{children}
+			</TooltipProvider>
 		</TRPCReactProvider>
 	);
 };

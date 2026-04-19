@@ -8,6 +8,7 @@ import {organizationSchema, organizationSchemaType} from "@/features/boarding/sc
 import {useDebounce} from "@/hooks/use-debounce";
 import {authClient} from "@/lib/auth-client";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {Controller, useForm} from "react-hook-form";
 import {Building2, Globe, ArrowRight} from "lucide-react";
@@ -16,6 +17,7 @@ import {toast} from "sonner";
 const CreateOrganizationForm = () => {
 	const [loading, setLoading] = useState(false);
 	const [slugAvailable, setSlugAvailable] = useState(false);
+	const router = useRouter()
 	
 	const form = useForm<organizationSchemaType>({
 		resolver: zodResolver(organizationSchema),
@@ -33,9 +35,7 @@ const CreateOrganizationForm = () => {
 	const debouncedSlug = useDebounce(previewSlug, 500);
 	
 	const onSubmit = async (data: organizationSchemaType) => {
-		console.log('heh')
 		if (!debouncedSlug || !data.name) return
-		console.log('hehehe')
 		await authClient.organization.create({
 			name: data.name,
 			slug: debouncedSlug
@@ -47,7 +47,8 @@ const CreateOrganizationForm = () => {
 			onSuccess: (ctx) => {
 				toast.success("Organization created successfully!")
 				setLoading(false);
-				// For example: router.push(`/organizations/${ctx.data.id}/dashboard`)
+				router.push(`/dashboard/${debouncedSlug}`)
+				
 			},
 			onRequest: (ctx) => {
 				setLoading(true)
