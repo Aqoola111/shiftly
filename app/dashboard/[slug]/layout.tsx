@@ -1,40 +1,13 @@
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList, BreadcrumbPage,
-	BreadcrumbSeparator
-} from "@/components/ui/breadcrumb";
-import {Separator} from "@/components/ui/separator";
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 import DashboardSidebar from "@/features/dashboard/components/dashboard-sidebar";
-import {auth} from "@/lib/auth";
-import prisma from "@/lib/prisma";
-import {headers} from "next/headers";
-import {notFound, redirect} from "next/navigation";
+import {getActiveOrg} from "@/lib/get-active-org";
 import {ReactNode} from "react";
 
 type Props = { children: ReactNode, params: Promise<{ slug: string }> }
 
 const Layout = async ({children, params}: Props) => {
 	const {slug} = await params
-	const session = await auth.api.getSession({
-		headers: await headers()
-	});
-	
-	if (!session) {
-		redirect('/sign-in')
-	}
-	
-	const organization = await prisma.organization.findUnique({
-		where: {
-			slug: slug
-		}
-	})
-	
-	if (!organization) {
-		notFound();
-	}
+	const {organization} = await getActiveOrg(slug)
 	
 	return (
 		<SidebarProvider>

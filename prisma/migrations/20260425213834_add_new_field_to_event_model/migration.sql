@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "event" ADD COLUMN     "endTime" TIMESTAMPTZ,
+ADD COLUMN     "startTime" TIMESTAMPTZ,
+ALTER COLUMN "date" SET DATA TYPE DATE;
